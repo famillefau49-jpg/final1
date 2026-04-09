@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Secondaire</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(#0c0c0c,#151515);
+  color:#f2e6ca;
+  font-family:"Courier New", monospace;
+  padding:20px;
+}
+
+.card {
+  max-width:800px;
+  width:100%;
+  padding:30px;
+  background:#1b1b1b;
+  border:2px solid #7b5d31;
+  border-radius:16px;
+  text-align:center;
+}
+
+h1 {
+  color:#9ecaff;
+  letter-spacing:2px;
+}
+
+.screen {
+  margin-top:20px;
+  padding:20px;
+  background:#111;
+  border-radius:10px;
+  text-align:left;
+  min-height:250px;
+  white-space:pre-line;
+}
+
+button {
+  margin-top:20px;
+  padding:12px;
+  width:100%;
+  max-width:300px;
+  background:#7b5d31;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>TRANSMISSION</h1>
+
+  <button onclick="start()">ACTIVER LA MISSION</button>
+
+  <div class="screen" id="screen">En attente…</div>
+</div>
+
+<script>
+
+let audioCtx;
+
+function beep(freq=800, duration=30){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.value = 0.03;
+
+    osc.start();
+
+    setTimeout(()=>{
+      osc.stop();
+      ctx.close();
+    }, duration);
+  }catch(e){}
+}
+
+async function typeText(text){
+  const screen = document.getElementById("screen");
+  screen.innerHTML = "";
+  
+  for(let i=0;i<text.length;i++){
+    screen.innerHTML += text[i];
+
+    if(text[i] !== " " && text[i] !== "\n"){
+      beep(900 + Math.random()*200, 20);
+    }
+
+    await new Promise(r=>setTimeout(r,40));
+  }
+}
+
+function start(){
+  const message = 
+`MISSION SECONDAIRE
+
+Un élément essentiel a été dissimulé.
+
+Il se trouve du côté des toilettes.
+
+Récupérez-le et rapportez-le au chef.
+
+Sans cet objet, vous ne pourrez pas poursuivre.
+
+Le Lynx compte sur vous.`;
+
+  typeText(message);
+}
+
+</script>
+
+</body>
+</html>
